@@ -7,7 +7,7 @@ OAuth2
 
 OAuth2 인증 절차
 -----------------
-![authlogic](https://user-images.githubusercontent.com/28287122/41580422-ced6860a-73d5-11e8-9519-9646c93ad6c2.PNG)
+<img src="https://user-images.githubusercontent.com/28287122/41580422-ced6860a-73d5-11e8-9519-9646c93ad6c2.PNG" width="70%">
 
 OAuth2 인증 방식(Grant Type)
 ----------------------------
