@@ -36,13 +36,17 @@ Resource Owner Password Credentials flow 사용법
 -----------------------------------------------
 #### HTTP reqeust
 > Method : POST  
-> Headers : { Authorization : <Basic Auth 방식으로 인코딩된 Client ID와 Client Secret>,  
->             Content-Type : "application/x-www-form-urlencoded" }  
-> Body : { grant_type : "password",
->          username : <인증 서버에 저장된 사용자 ID>,
->          password : <인증 서버에 저장된 해당 사용자 ID의 비밀번호>,
->          scope : <인증 서버에 지정한 권한으로 여러개를 띄어쓰기 기준으로 입력 가능함>
->        }  
+
+> Headers : 
+>> { Authorization : <Basic Auth 방식으로 인코딩된 Client ID와 Client Secret>,  
+>> Content-Type : "application/x-www-form-urlencoded" }  
+
+> Body :  
+>> { grant_type : "password",  
+>> username : <인증 서버에 저장된 사용자 ID>,  
+>> password : <인증 서버에 저장된 해당 사용자 ID의 비밀번호>,  
+>> scope : <인증 서버에 지정한 권한으로 여러개를 띄어쓰기 기준으로 입력 가능함>  
+>> }  
 
 #### HTTP reqeust 응답 결과 
 ![image](https://user-images.githubusercontent.com/28287122/41580400-bea9d732-73d5-11e8-8da0-6011967c8ab6.png)
@@ -166,3 +170,5 @@ OAuth2Application.java (main class)
 > * `public TokenStore tokenStore()` 과 `public JwtAccessTokenConverter jwtAccessTokenConverter()` JWT 설정관련
 >   * `converter.setSigningKey("123");` - JWT의 SingingKey를 "123"으로 고정 약속함.
 > * ` public FilterRegistrationBean corsFilter()` - cross domain 문제처리 filter
+
+
