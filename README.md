@@ -1,4 +1,5 @@
 # OAuth2-Server
+## 1. OAuth2에 관하여 
 OAuth2
 --------
 > * 웹, 모바일 및 데스크톱 어플리케이션에서 안전하고 표준화된 방법으로 안전하게 인증할 수 있는 개방형 프로토콜  
@@ -51,6 +52,8 @@ Resource Owner Password Credentials flow 사용법
 #### HTTP reqeust 응답 결과 
 ![image](https://user-images.githubusercontent.com/28287122/41580400-bea9d732-73d5-11e8-8da0-6011967c8ab6.png)
 
+
+## 2. OAuth2 Service 제작
 pom.xml
 -------
 ```xml
@@ -98,8 +101,10 @@ pom.xml
 ```
 
 > **주의**
-> 1. 위의 `dependency`는 spring boot `1.4.4.RELEASE` version을 기준으로 함 -> spring boot version 변경 시 호환 문제 발생
-> 2. `MYSQL` dependency version은 설치된 MYSQL version과 일치해야 함. 
+> 1. 위의 `dependency`는 spring boot `1.4.4.RELEASE` version을 기준으로 작성되었다.  
+> spring boot version 변경 시 dependency 호환 문제가 발생할 수 있으로 maven 공식 홈페이지를 참고하여 수정한다.
+> 2. `MYSQL` dependency version은 설치된 MYSQL version과 일치해야 한다.  
+> `MYSQL 8.0` version 이상에서는 시간대 설정 문제가 발생할 수 있으니 별도로 처리해 주어야한다.
 
 OAuth2Application.java (main class)
 ------------------------------------
@@ -162,14 +167,16 @@ OAuth2Application.java (main class)
 ```
 
 > * OAuth2 설정관련 부분
-> * `@EnableAuthorizationServer` 어노테이션 추가
+> * `@EnableAuthorizationServer` 어노테이션을 추가한다.
 > * `public void configure(AuthorizationServerEndpointsConfigurer endpoints)`  
->   * `.accessTokenConverter(jwtAccessTokenConverter())` - JWT token을 access token으로 사용
->   * `.userDetailsService(userDetailsService);` - userDetailsService를 이용, spring security에서 제공하는 로그인 모듈 이용
->   * `private CustomedUserDetailsService userDetailsService;` - spring security의 `userDetailService`를 필요에 맞게 변경한 것을 
-> * `public TokenStore tokenStore()` 과 `public JwtAccessTokenConverter jwtAccessTokenConverter()` JWT 설정관련
->   * `converter.setSigningKey("123");` - JWT의 SingingKey를 "123"으로 고정 약속함.
-> * ` public FilterRegistrationBean corsFilter()` - cross domain 문제처리 filter
+>   * `.accessTokenConverter(jwtAccessTokenConverter())` - JWT token converter를 이용하여 access token을 convert 하겠다는 것이다.
+>   * `.userDetailsService(userDetailsService);` - userDetailsService를 이용한다는 것으로  
+> `private CustomedUserDetailsService userDetailsService;` - spring security의 `userDetailService`를 필요에 맞게 변경한 것- 으로 `userDetailsService`를 이용하겠다는 것이다.  
+> `userDetailsService`는 spring security에서 로그인 처리를 위해 제공하는 패키지이다.
+> * `public TokenStore tokenStore()` 과 `public JwtAccessTokenConverter jwtAccessTokenConverter()` JWT 관련 설정이다.
+>   * `converter.setSigningKey("123");` - JWT의 SingingKey를 "123"으로 고정 약속한 것으로  
+> 후에 `key-pool`을 이용하여 생성된 key로 설정해도 된다.
+> * ` public FilterRegistrationBean corsFilter()` - cross domain 문제를 해결해주는 부분이다.
 
 #### 2. OAuth2AuthorizationServerConfig
 ```java
@@ -216,7 +223,47 @@ OAuth2Application.java (main class)
         }
 ```
 > * ` public void configure(ClientDetailsServiceConfigurer clients) `  
-> Client에 관한 정보를 저장하는 곳  
-> 위의 userDetailsService와 동일하게 DB로 그 정보를 관리해도 됨.  
-> 현재 프로젝트에서 client는 웹 브라우저 하나로 별도의 DB로 관리하지 않음
-> * 다른 부분 - JWT token에 관한 
+> Client에 관한 정보를 저장하는 곳이다/  
+> 위의 userDetailsService와 동일하게 DB로 그 정보를 관리해도 된다.  
+> 현재 프로젝트에서 client는 웹 브라우저 하나로 별도의 DB로 관리하지 않는다.
+> * 다른 부분 - JWT token에 관한 설정 부분이다.
+
+bootstrap.yml
+--------------
+```yml
+server:
+    port: 8081
+
+
+spring:
+    application:
+        name: auth-service
+    jpa:
+        hibernate:
+            ddl-auto: update
+            show-sql: true
+  
+    datasource:
+        url: jdbc:mysql://192.168.10.178:3306/memberapi2
+        tomcat:
+            connection-properties: useUnicode=true;characterEncoding=utf-8;serverTimezone=UTC;
+        username: sangmin
+        password: tkdals12
+        driver-class-name: com.mysql.jdbc.Driver
+
+security:
+	authorization:
+        token-key-access: isAuthenticated()
+```
+> * server.port 원하는 port로 지정할 수 있다.  
+> * `spring.application` , `spring.jpa`, `spring.datasource`는 사용자 정보를 저장하고 있는 MYSQL과 연동해주는 부분이다.  
+> `spring.datasource` 부분만 제작한 DB에 맞게 수정해주면 된다.
+>
+
+
+사용자(User or Member) 관리 service 
+-----------------------------------
+프로젝트 초기에는 사용자 관리 서비스(user service)와 인증 서비스(Auth service)를 분리하여 구상하였지만 두 서비스를 분리하지 않기로 하였다.  
+**User Service**는 RESTfull API 형태로 제작하였다.
+
+
