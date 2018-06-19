@@ -53,7 +53,7 @@ Resource Owner Password Credentials flow 사용법
 
 pom.xml
 -------
-~~~
+```xml
 <dependency>
  <groupId>org.springframework.security.oauth</groupId>
  <artifactId>spring-security-oauth2</artifactId>
@@ -95,7 +95,7 @@ pom.xml
  <version>8.0.11</version>
 </dependency>
 
-~~~
+```
 
 > **주의**
 > 1. 위의 `dependency`는 spring boot `1.4.4.RELEASE` version을 기준으로 함 -> spring boot version 변경 시 호환 문제 발생
