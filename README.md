@@ -171,4 +171,52 @@ OAuth2Application.java (main class)
 >   * `converter.setSigningKey("123");` - JWT의 SingingKey를 "123"으로 고정 약속함.
 > * ` public FilterRegistrationBean corsFilter()` - cross domain 문제처리 filter
 
+#### 2. OAuth2AuthorizationServerConfig
+```java
+ @Configuration
+    protected static class JwtOAuth2AuthorizationServerConfiguration extends OAuth2AuthorizationServerConfiguration {
 
+        private final JwtAccessTokenConverter jwtAccessTokenConverter;
+        public JwtOAuth2AuthorizationServerConfiguration(BaseClientDetails details,
+                                                         AuthenticationManager authenticationManager,
+                                                         ObjectProvider<TokenStore> tokenStoreProvider,
+                                                         AuthorizationServerProperties properties,
+                                                         JwtAccessTokenConverter jwtAccessTokenConverter
+                                                        ,ClientDetailsService clientDetailsService
+                                                         ) {
+            super(details, authenticationManager, tokenStoreProvider, properties);
+            this.jwtAccessTokenConverter = jwtAccessTokenConverter;
+        }
+
+        
+        
+        @Override
+        public void configure(AuthorizationServerEndpointsConfigurer endpoints)
+                throws Exception {
+            super.configure(endpoints);
+            endpoints.accessTokenConverter(jwtAccessTokenConverter);
+        }
+        
+       
+        @Override 
+        public void configure(ClientDetailsServiceConfigurer clients) throws Exception{
+        	//clients.withClientDetails(clientDetailsService);
+        	clients.inMemory()
+        		.withClient("apigateway")
+        		.secret("apigateway12")
+        		.authorizedGrantTypes("authorization_code", "password", "client_credentials", "implicit", "refresh_token")
+        		.authorities("ROLE_MY_CLIENT")
+        		.scopes("read", "write")
+        		.accessTokenValiditySeconds(60*60*4)
+        		.refreshTokenValiditySeconds(60*60*24*120);
+        
+      
+        	
+        	
+        }
+```
+> * ` public void configure(ClientDetailsServiceConfigurer clients) `  
+> Client에 관한 정보를 저장하는 곳  
+> 위의 userDetailsService와 동일하게 DB로 그 정보를 관리해도 됨.  
+> 현재 프로젝트에서 client는 웹 브라우저 하나로 별도의 DB로 관리하지 않음
+> * 다른 부분 - JWT token에 관한 
