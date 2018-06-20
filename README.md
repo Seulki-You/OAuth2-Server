@@ -4,7 +4,6 @@
 > * 웹, 모바일 및 데스크톱 어플리케이션에서 안전하고 표준화된 방법으로 안전하게 인증할 수 있는 개방형 프로토콜  
 > * 3rd party를 위한 범용적인 인증 표준  
 
-
 1-2 OAuth2 인증 절차
 -----------------
 <img src="https://user-images.githubusercontent.com/28287122/41580422-ced6860a-73d5-11e8-9519-9646c93ad6c2.PNG" width="70%">
@@ -71,6 +70,18 @@ JWT(Jason Web Token)은 claim 기반의 token으로 token 자체에 모든 정�
 위에서 `"access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1Mjk0Njg2MzcsInVzZXJfbmFtZSI6InNldWxraSIsImp0aSI6IjI4YWY4Yjk2LWU5NzItNDc5ZC04ZjU1LWNjNGU2YjM1ZmYzNiIsImNsaWVudF9pZCI6ImFwaWdhdGV3YXkiLCJzY29wZSI6WyJyZWFkIiwid3JpdGUiXX0.HEIaKHyZk-VqNR673eNKrWM9bh_ezWU846CjkBAve44"` 부분이 JWT 형태로 발급된 `access token`이다.  
 
 JWT는 `.`를 기준으로 3가지 부분으로 나누어진다.  
+![image](https://user-images.githubusercontent.com/28287122/41631098-b63378e0-746d-11e8-8f82-42bbec3d49be.png)
+위의 그림에서 볼 수 있듯이 빨간 부분인 `HEADER`와 보라색 부분인 `PAYLOAD`, 파란색 부분의 `VERIFY SIGNATURE` 세 부분으로 나누어진다. 
+* *HEADER*  
+ JWT token을 어떻게 해석해야 하는지 명시하는 부분이다.  
+
+* *PAYLOAD*(JWT Claim Set)  
+ 실제 token의 body로 token의 실질적인 정보를 가지고 있는 부분이다.  
+ 위의 사진에서 decode된 오른쪽의 `PAYLOAD` 부분을 확인하면 token의 만료 시간과 token 발급을 요청한 사용자와 client에 관한 정보와  
+ 해당 token에 부여된 권한에 대한 정보를 나타낸다.  
+
+* *VERIFY SIGNATURE*  
+ JWT token의 JWT Claim Set 부분이 위변조 되었는지 검증하기 위한 부분이다.
 
 # 2. OAuth2 Service 제작
 2-1 pom.xml
@@ -282,6 +293,14 @@ security:
 
 # 3. 사용자(User or Member) 관리 service  
 프로젝트 초기에는 사용자 관리 서비스(user service)와 인증 서비스(Auth service)를 분리하여 구상하였지만 두 서비스를 분리하지 않기로 하였다.  
-**User Service**는 RESTfull API 형태로 제작하였다.
+**User Service**는 REST API 형태로 제작하였다.
 
 
+# 4. References
+* [JWT token](https://blog.outsider.ne.kr/1160).
+* [Spring Boot OAuth2 Tutorial](https://spring.io/guides/tutorials/spring-boot-oauth2/).
+* [Spring Boot OAuth2 example1 - 간단한 OAuth2 서비스](https://brunch.co.kr/@sbcoba/1).
+* [Spring Boot OAuth2 example2 - client와 로그인 기능까지](http://www.baeldung.com/rest-api-spring-oauth2-angularjs).
+* [Spring Security Login](https://xmfpes.github.io/spring/spring-security/).
+* [Spring Security CORS 설정](https://oddpoet.net/blog/2017/04/27/cors-with-spring-security/).
+* [Spring boot RESTFul Web Service - 회원 관리 부분](http://www.namooz.com/2016/12/10/spring-boot-restful-web-service-example-get-post-put-delete-patch/).
