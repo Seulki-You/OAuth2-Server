@@ -1,8 +1,8 @@
 # 1. OAuth2에 관하여 
 1-1 OAuth2
 --------
-> * 웹, 모바일 및 데스크톱 어플리케이션에서 안전하고 표준화된 방법으로 안전하게 인증할 수 있는 개방형 프로토콜  
-> * 3rd party를 위한 범용적인 인증 표준  
+ * 웹, 모바일 및 데스크톱 어플리케이션에서 안전하고 표준화된 방법으로 안전하게 인증할 수 있는 개방형 프로토콜  
+ * 3rd party를 위한 범용적인 인증 표준  
 
 1-2 OAuth2 인증 절차
 -----------------
@@ -37,15 +37,19 @@
 * Method : POST  
 
 * Headers : 
-> { Authorization : <Basic Auth 방식으로 인코딩된 Client ID와 Client Secret>,  
-> Content-Type : "application/x-www-form-urlencoded" }  
-
+```jason
+{ Authorization : <Basic Auth 방식으로 인코딩된 Client ID와 Client Secret>,  
+ Content-Type : "application/x-www-form-urlencoded" }  
+```
 * Body :  
-> { grant_type : "password",  
-> username : <인증 서버에 저장된 사용자 ID>,  
-> password : <인증 서버에 저장된 해당 사용자 ID의 비밀번호>,  
-> scope : <인증 서버에 지정한 권한으로 여러개를 띄어쓰기 기준으로 입력 가능함>  
-> }  
+ ```
+ {	
+	"grant_type" : "password",
+	"username" : <인증 서버에 저장된 사용자 ID>,
+	"password" : <인증 서버에 저장된 해당 사용자 ID의 비밀번호>,
+	"scope" : <인증 서버에 지정한 권한으로 여러개를 띄어쓰기 기준으로 입력 가능함>
+ }  
+ ```
 
 #### HTTP reqeust 응답 결과 
 ![image](https://user-images.githubusercontent.com/28287122/41580400-bea9d732-73d5-11e8-8da0-6011967c8ab6.png)  
