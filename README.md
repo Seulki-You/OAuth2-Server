@@ -293,8 +293,14 @@ security:
 
 # 3. 사용자(User or Member) 관리 service  
 프로젝트 초기에는 사용자 관리 서비스(user service)와 인증 서비스(Auth service)를 분리하여 구상하였지만 두 서비스를 분리하지 않기로 하였다.  
-**User Service**는 REST API 형태로 제작하였다.
+**User Service**는 REST API 형태로 제작하였다.  
 
+HTTP Method | URI | Description
+------------|-----|---------------
+GET | /users/{id} | 해당 *_id_* user 정보 조회  
+POST | /users | 새로운 user 생성
+PATCH | /users/{id} | 해당 *_id_* user 정보 수정  
+DELETE | /users/{id} | 해당 *_id_* user 정보 삭제  
 
 # 4. References
 * [JWT token](https://blog.outsider.ne.kr/1160).
