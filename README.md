@@ -252,7 +252,7 @@ spring:
         driver-class-name: com.mysql.jdbc.Driver
 
 security:
-	authorization:
+        authorization:
         token-key-access: isAuthenticated()
 ```
 > * server.port 원하는 port로 지정할 수 있다.  
