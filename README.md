@@ -1,16 +1,15 @@
-# OAuth2-Server
-## 1. OAuth2에 관하여 
-OAuth2
+# 1. OAuth2에 관하여 
+1-1 OAuth2
 --------
 > * 웹, 모바일 및 데스크톱 어플리케이션에서 안전하고 표준화된 방법으로 안전하게 인증할 수 있는 개방형 프로토콜  
 > * 3rd party를 위한 범용적인 인증 표준  
 
 
-OAuth2 인증 절차
+1-2 OAuth2 인증 절차
 -----------------
 <img src="https://user-images.githubusercontent.com/28287122/41580422-ced6860a-73d5-11e8-9519-9646c93ad6c2.PNG" width="70%">
 
-OAuth2 인증 방식(Grant Type)
+1-3 OAuth2 인증 방식(Grant Type)
 ----------------------------
 ### 1. Authorization Code flow
  * 웹 서버에서 인증 받을 때 가장 많이 이용되는 방식 
@@ -33,7 +32,7 @@ OAuth2 인증 방식(Grant Type)
  * 기존에 발급된 refresh token이 존재할때 access token을 재발급 받을 때 이용
  
 
-Resource Owner Password Credentials flow 사용법
+1-4 Resource Owner Password Credentials flow 사용법
 -----------------------------------------------
 #### HTTP reqeust
 * Method : POST  
@@ -50,11 +49,31 @@ Resource Owner Password Credentials flow 사용법
 > }  
 
 #### HTTP reqeust 응답 결과 
-![image](https://user-images.githubusercontent.com/28287122/41580400-bea9d732-73d5-11e8-8da0-6011967c8ab6.png)
+![image](https://user-images.githubusercontent.com/28287122/41580400-bea9d732-73d5-11e8-8da0-6011967c8ab6.png)  
 
+1-5 JWT token
+---------------
+현재 프로젝트에서 사용한 access token의 형태이다.  
+JWT(Jason Web Token)은 claim 기반의 token으로 token 자체에 모든 정보를 가지고 있어 별도의 token 저장소가 필요없다는 장점이 있다. 
+본 프로젝트에서는 access token을 client인 웹 브라우저의 `Local Storage`에 저장해서 관리하고 있다.  
 
-## 2. OAuth2 Service 제작
-pom.xml
+다음은 인증 서버에서 `JSON`의 형태로 응답을 준 것이다.
+```json
+{
+    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1Mjk0Njg2MzcsInVzZXJfbmFtZSI6InNldWxraSIsImp0aSI6IjI4YWY4Yjk2LWU5NzItNDc5ZC04ZjU1LWNjNGU2YjM1ZmYzNiIsImNsaWVudF9pZCI6ImFwaWdhdGV3YXkiLCJzY29wZSI6WyJyZWFkIiwid3JpdGUiXX0.HEIaKHyZk-VqNR673eNKrWM9bh_ezWU846CjkBAve44",
+    "token_type": "bearer",
+    "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1Mzk4MjIyMzcsInVzZXJfbmFtZSI6InNldWxraSIsImp0aSI6IjQyYTAxNjExLTE0YmUtNDM2MC04MmMyLWJmODVkYTA0NTljMSIsImNsaWVudF9pZCI6ImFwaWdhdGV3YXkiLCJzY29wZSI6WyJyZWFkIiwid3JpdGUiXSwiYXRpIjoiMjhhZjhiOTYtZTk3Mi00NzlkLThmNTUtY2M0ZTZiMzVmZjM2In0.AuRTX7iVlifPdt9OF00DfrK4WsTEkgxJmohlES8nq_4",
+    "expires_in": 14399,
+    "scope": "read write",
+    "jti": "28af8b96-e972-479d-8f55-cc4e6b35ff36"
+}
+```
+위에서 `"access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1Mjk0Njg2MzcsInVzZXJfbmFtZSI6InNldWxraSIsImp0aSI6IjI4YWY4Yjk2LWU5NzItNDc5ZC04ZjU1LWNjNGU2YjM1ZmYzNiIsImNsaWVudF9pZCI6ImFwaWdhdGV3YXkiLCJzY29wZSI6WyJyZWFkIiwid3JpdGUiXX0.HEIaKHyZk-VqNR673eNKrWM9bh_ezWU846CjkBAve44"` 부분이 JWT 형태로 발급된 `access token`이다.  
+
+JWT는 `.`를 기준으로 3가지 부분으로 나누어진다.  
+
+# 2. OAuth2 Service 제작
+2-1 pom.xml
 -------
 ```xml
 <dependency>
@@ -106,7 +125,7 @@ pom.xml
 > 2. `MYSQL` dependency version은 설치된 MYSQL version과 일치해야 한다.  
 > `MYSQL 8.0` version 이상에서는 시간대 설정 문제가 발생할 수 있으니 별도로 처리해 주어야한다.
 
-OAuth2Application.java (main class)
+2-2 OAuth2Application.java (main class)
 ------------------------------------
 #### 1. OAuth2AuthorizationServerConfig
 ```java
@@ -228,7 +247,7 @@ OAuth2Application.java (main class)
 > 현재 프로젝트에서 client는 웹 브라우저 하나로 별도의 DB로 관리하지 않는다.
 > * 다른 부분 - JWT token에 관한 설정 부분이다.
 
-bootstrap.yml
+2-3 bootstrap.yml
 --------------
 ```yml
 server:
@@ -261,8 +280,7 @@ security:
 >
 
 
-사용자(User or Member) 관리 service 
------------------------------------
+# 3. 사용자(User or Member) 관리 service  
 프로젝트 초기에는 사용자 관리 서비스(user service)와 인증 서비스(Auth service)를 분리하여 구상하였지만 두 서비스를 분리하지 않기로 하였다.  
 **User Service**는 RESTfull API 형태로 제작하였다.
 
